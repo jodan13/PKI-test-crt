@@ -1,0 +1,17 @@
+h3 {
+  color: blue;
+}
+
+#pem-text-block{
+  width:500px;
+  border:solid 1px #999;
+  border-radius:5px;
+  -webkit-border-radius:5px;
+  height:340px;
+  font:normal 12px/15px monospace;
+  display:block;
+  margin:0 0 12px;
+  box-shadow:0 0 5px 5px #EFEFEF inset;
+  -webkit-box-shadow:0 0 5px 5px #EFEFEF inset;
+  padding:20px;
+}
