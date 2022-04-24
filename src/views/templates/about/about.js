@@ -13,7 +13,6 @@ csr.setSubject([{
     name: 'commonName',
     value: 'Привет',
     valueTagClass: forge.asn1.Type.UTF8,
-    valueType: forge.asn1.Type.UTF8
 }, {
     name: 'countryName',
     value: 'US'
@@ -48,10 +47,29 @@ csr.setAttributes([{
         }, {
             type: 2,
             value: 'other.domain.com',
-        }, {
-            type: 2,
-            value: 'www.domain.net'
-        }]
+        },
+            {
+                type: 0,
+                value: [
+                    {
+                        tagClass: 0,
+                        type: 6,
+                        value: "1.3.6.1.4.1.311.25.1"
+                    },
+                    {
+                        tagClass: 128,
+                        type: 0,
+                        value: [
+                            {
+                                tagClass: 0,
+                                type: 12,
+                                value: "e4134486122d452495c771503eabf73f"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }]
 }]);
 
@@ -59,29 +77,21 @@ csr.setAttributes([{
 csr.sign(keys.privateKey);
 
 // verify certification request
-const verified = csr.verify();
+// const verified = csr.verify();
 
-console.log('verified', verified)
+// console.log('verified', verified)
 
 // convert certification request to PEM-format
 const pem = forge.pki.certificationRequestToPem(csr);
 
-console.log('pem', pem)
-
 // convert a Forge certification request from PEM-format
 csr = forge.pki.certificationRequestFromPem(pem);
-
-
-console.log('csr', csr)
 
 // get an attribute
 // csr.getAttribute({name: 'subject'});
 
 // get extensions array
 csr.getAttribute({name: 'extensionRequest'});
-
-console.log('csr.getAttribute({name: extensionRequest})', csr.getAttribute({name: 'extensionRequest'}).extensions)
-
 
 const pre = document.getElementById('pre')
 const textarea = document.getElementById('pem-text-block')
@@ -91,8 +101,6 @@ pre.innerText = JSON.stringify([csr.subject, csr.getAttribute({name: 'extensionR
 
 window.parsePKCS10 = () => {
     const parce = forge.pki.certificationRequestFromPem(textarea.value)
-
-    console.log('parce', parce.subject.getField("commonName"))
 
     pre.innerText = JSON.stringify([parce.subject, parce.getAttribute({name: 'extensionRequest'}).extensions], null, 2)
 }

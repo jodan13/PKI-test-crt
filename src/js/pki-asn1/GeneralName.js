@@ -480,7 +480,7 @@ export default class GeneralName
 			"registeredID"
 		]);
 		// endregion
-		
+
 		// region Check the schema is valid
 		const asn1 = compareSchema(schema,
 			schema,
@@ -579,9 +579,7 @@ export default class GeneralName
 						tagClass: 3, // CONTEXT-SPECIFIC
 						tagNumber: this.type
 					},
-					value: [
-						this.value
-					]
+					value: Array.isArray(this.value) ? [...this.value] : [this.value]
 				});
 			case 1:
 			case 2:

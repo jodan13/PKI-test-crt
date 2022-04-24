@@ -5,7 +5,8 @@
   "main": "./src/index",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --open --stats-children --config config/webpack.dev",
-    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod"
+    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod",
+    "deploy": "aws --profile web-dev --endpoint-url=https://storage.yandexcloud.net s3 sync --delete ./build/ s3://test-crt/"
   },
   "keywords": [],
   "author": "",

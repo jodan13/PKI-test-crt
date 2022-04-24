@@ -8,7 +8,7 @@ const webpackConfig = {
     context: paths.src,
     entry: {
         main: './index.js',
-        home: './views/templates/home/home.js'
+        home: './views/templates/home/error.js'
     },
     output: {
         path: paths.dist,

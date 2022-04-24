@@ -29,11 +29,16 @@
         <label for="altNamesDNSName" style="font-weight:bold">AltNames DNSName:</label>
         <input id="altNamesDNSName" onchange="handleAltNamesDNSNameOnChange()"/>
       </p>
+      <p>
+        <label for="altNamesMSGUID" style="font-weight:bold">AltNames MSGUID:</label>
+        <input id="altNamesMSGUID" onchange="handleAltNamesMSGUIDOnChange()"/>
+      </p>
       <label for="pem-text-block" style="font-weight:bold">Paste in PKCS#10:</label>
       <textarea id="pem-text-block"></textarea>
       <a onclick="createPKCS10();">Create</a>
       <a onclick="parsePKCS10();">Parse</a>
       <a onclick="verifyPKCS10();">Verify</a>
+      <a id="dwn-btn">Download</a>
     </div>
     <div id="pkcs10-data-block" style="display:none;">
       <h2 id="pkcs10-subject-cn"></h2>
