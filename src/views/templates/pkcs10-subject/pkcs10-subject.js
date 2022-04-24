@@ -1,4 +1,3 @@
-import forge from "node-forge";
 import {arrayBufferToString, fromBase64, stringToArrayBuffer, toBase64} from "pvutils";
 import {
 	BmpString,
@@ -26,6 +25,7 @@ import Extensions from "src/js/pki-asn1/Extensions";
 import GeneralName from "src/js/pki-asn1/GeneralName";
 import GeneralNames from "src/js/pki-asn1/GeneralNames";
 import RSAPublicKey from "src/js/pki-asn1/RSAPublicKey";
+import "src/js/asn1js/index";
 import './pkcs10-subject.scss'
 
 // <nodewebcryptoossl>
@@ -209,7 +209,6 @@ window.parsePKCS10 = () =>
 
 	// region Decode existing PKCS#10
 	const stringPEM = document.getElementById("pem-text-block").value.replace(/(-----(BEGIN|END) CERTIFICATE REQUEST-----|\n)/g, "");
-	const csr = forge.pki.certificationRequestFromPem(document.getElementById("pem-text-block").value);
 	const asn1 = fromBER(stringToArrayBuffer(fromBase64((stringPEM))));
 
 	// eslint-disable-next-line no-console
@@ -306,7 +305,7 @@ window.parsePKCS10 = () =>
 	// region Put information about PKCS#10 attributes
 	if("attributes" in pkcs10)
 	{
-		const enc = new TextDecoder("utf-8");
+		// const enc = new TextDecoder("utf-8");
 
 		for(let i = 0; i < pkcs10.attributes.length; i += 1)
 		{
@@ -334,7 +333,7 @@ window.parsePKCS10 = () =>
 				}
 				else
 				{
-					subjval = subjval + ((subjval.length === 0) ? "" : ";") + enc.decode(pkcs10.attributes[i].values[0].valueBlock.value[1].valueBlock.value[1].valueBlock.value[0].valueHex);
+					subjval = subjval + ((subjval.length === 0) ? "" : ";") + pkcs10.attributes[i].values[j].valueBlock.value;
 
 				}
 
@@ -342,9 +341,7 @@ window.parsePKCS10 = () =>
 
 			}
 
-			const ulrow = `<li><p><span>${typeval}</span> ${subjval}</p></li><br/>
-				<pre>${JSON.stringify(csr.getAttribute({name: 'extensionRequest'}).extensions, null, 2)}</pre>
-			`;
+			const ulrow = `<li><p><span>${typeval}</span> ${subjval}</p></li><br/>`;
 			// noinspection InnerHTMLJS
 
 			document.getElementById("pkcs10-exten").innerHTML = document.getElementById("pkcs10-exten").innerHTML + ulrow;
@@ -458,7 +455,7 @@ const download = (filename, text) => {
 	const element = document.createElement('a');
 
 	element.setAttribute('href', `data:text/plain;charset=utf-8,${  encodeURIComponent(text)}`);
-	element.setAttribute('download', filename);
+	element.setAttribute('download', `${filename}.csr`);
 
 	element.style.display = 'none';
 	document.body.appendChild(element);
