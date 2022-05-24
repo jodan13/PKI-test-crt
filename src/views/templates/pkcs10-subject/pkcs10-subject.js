@@ -38,9 +38,22 @@ let signAlg = "RSASSA-PKCS1-V1_5";
 
 let subjectCN = "Simple test (простой тест)";
 
+let rfc822Name = 'email@address.com';
+
+let rfc822NameChecked = true;
+
+let UPN = 'email@address.com';
+
+let UPNChecked = true;
+
 let dNSName = "www.domain.com";
 
+let dNSNameChecked = true;
+
 let MSGUID = 'e4134486122d452495c771503eabf73f';
+
+let MSGUIDChecked = true;
+
 
 //* ********************************************************************************
 // region Create PKCS#10
@@ -77,32 +90,87 @@ window.createPKCS10Internal = () =>
 		value: new Utf8String({ value: subjectCN })
 	}));
 
-	const altNames = new GeneralNames({
-		names: [
-			// new GeneralName({
-			// 	type: 1, // rfc822Name
-			// 	value: "email@address.com"
-			// }),
+	const altNamesNames = [];
+
+	if(rfc822NameChecked) {
+		altNamesNames.push(
 			new GeneralName({
-				type: 2, // dNSName
-				value: dNSName
-			}),
+				type: 1,
+				value: rfc822Name
+			})
+		)
+	}
+
+	if(dNSNameChecked) {
+		altNamesNames.push(
 			new GeneralName({
-				type: 0, // MS GUID, Globally Unique Identifier
-				value: [new ObjectIdentifier({ value: "1.3.6.1.4.1.311.25.1" }), new Constructed({
+			type: 2,
+			value: dNSName
+		})
+		)
+	}
+
+	if(MSGUIDChecked) {
+			altNamesNames.push(
+				new GeneralName({
+					type: 0, // MS GUID, Globally Unique Identifier
+					value: [new ObjectIdentifier({ value: "1.3.6.1.4.1.311.25.1" }), new Constructed({
+						idBlock: {
+							tagClass: 3, // CONTEXT-SPECIFIC 128
+							tagNumber: 0
+						},
+						value: [new Utf8String({ value: MSGUID })]
+					})]
+				}),
+			)
+	}
+
+	if(UPNChecked) {
+		altNamesNames.push(
+			new GeneralName({
+				type: 0, // universalPrincipalName
+				value: [new ObjectIdentifier({ value: "1.3.6.1.4.1.311.20.2.3" }), new Constructed({
 					idBlock: {
 						tagClass: 3, // CONTEXT-SPECIFIC 128
 						tagNumber: 0
 					},
-					value: [new Utf8String({ value: MSGUID })]
+					value: [new Utf8String({ value: UPN })]
 				})]
 			}),
-			// new GeneralName({
-			// 	type: 7, // iPAddress
-			// 	value: new OctetString({ valueHex: (new Uint8Array([0xC0, 0xA8, 0x00, 0x01])).buffer })
-			// }),
-		]
+		)
+	}
+
+
+	const altNames = new GeneralNames({
+		names: altNamesNames
 	});
+
+	// const altNames = new GeneralNames({
+	// 	names: [
+	// 		new GeneralName({
+	// 			type: 1, // rfc822Name
+	// 			value: "email@address.com"
+	// 		}),
+	// 		new GeneralName({
+	// 			type: 2, // dNSName
+	// 			value: dNSName
+	// 		}),
+	// 		new GeneralName({
+	// 			type: 0, // MS GUID, Globally Unique Identifier
+	// 			value: [new ObjectIdentifier({ value: "1.3.6.1.4.1.311.25.1" }), new Constructed({
+	// 				idBlock: {
+	// 					tagClass: 3, // CONTEXT-SPECIFIC 128
+	// 					tagNumber: 0
+	// 				},
+	// 				value: [new Utf8String({ value: MSGUID })]
+	// 			})]
+	// 		}),
+	// 		new GeneralName({
+	// 			type: 7, // iPAddress
+	// 			value: new OctetString({ valueHex: (new Uint8Array([0xC0, 0xA8, 0x00, 0x01])).buffer })
+	// 		}),
+	// 	]
+	// });
 
 	pkcs10.attributes = [];
 	// endregion
@@ -260,7 +328,7 @@ window.parsePKCS10 = () =>
 		const rsaPublicKeySimple = new RSAPublicKey({ schema: asn1PublicKey.result });
 		const modulusView = new Uint8Array(rsaPublicKeySimple.modulus.valueBlock.valueHex);
 
-		let modulusBitLength = 0;
+		let modulusBitLength;
 
 		if(modulusView[0] === 0x00)
 			{modulusBitLength = (rsaPublicKeySimple.modulus.valueBlock.valueHex.byteLength - 1) * 8;}
@@ -439,17 +507,49 @@ window.handleSubjectCNOnChange = () =>
 	subjectCN = document.getElementById("subjectCN").value;
 }
 
-//* ********************************************************************************
+//* ******************************************************************************** DNSName
+window.handleAltNamesRfc822NameOnChange = () =>
+{
+	rfc822Name = document.getElementById("rfc822Name").value;
+}
+
+window.handleAltNamesRfc822NameCheckedOnChange = () =>
+{
+	rfc822NameChecked = document.getElementById("rfc822NameChecked").checked;
+}
+
+//* ******************************************************************************** DNSName
+window.handleAltNamesUPNOnChange = () =>
+{
+	UPN = document.getElementById("UPN").value;
+}
+
+window.handleAltNamesUPNCheckedOnChange = () =>
+{
+	UPNChecked = document.getElementById("UPNChecked").checked;
+}
+
+//* ******************************************************************************** DNSName
 window.handleAltNamesDNSNameOnChange = () =>
 {
 	dNSName = document.getElementById("altNamesDNSName").value;
 }
 
+window.handleAltNamesDNSNameCheckedOnChange = () =>
+{
+	dNSNameChecked = document.getElementById("altNamesDNSNameChecked").checked;
+}
+
+//* ******************************************************************************** MSGUID
 window.handleAltNamesMSGUIDOnChange = () =>
 {
 	MSGUID = document.getElementById("altNamesMSGUID").value;
 }
 
+window.handleAltNamesMSGUIDCheckedOnChange = () =>
+{
+	MSGUIDChecked = document.getElementById("altNamesDNSNameChecked").checked;
+}
 
 const download = (filename, text) => {
 	const element = document.createElement('a');
