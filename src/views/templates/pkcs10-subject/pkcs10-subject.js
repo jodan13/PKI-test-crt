@@ -113,8 +113,8 @@ window.createPKCS10Internal = () =>
 	if(MSGUIDChecked) {
 			altNamesNames.push(
 				new GeneralName({
-					type: 0, // MS GUID, Globally Unique Identifier
-					value: [new ObjectIdentifier({ value: "1.3.6.1.4.1.311.25.1" }), new Constructed({
+					type: 0,
+					value: [new ObjectIdentifier({ value: "1.3.6.1.4.1.311.25.1" }), new Constructed({ // MS GUID, Globally Unique Identifier
 						idBlock: {
 							tagClass: 3, // CONTEXT-SPECIFIC 128
 							tagNumber: 0
@@ -128,8 +128,8 @@ window.createPKCS10Internal = () =>
 	if(UPNChecked) {
 		altNamesNames.push(
 			new GeneralName({
-				type: 0, // universalPrincipalName
-				value: [new ObjectIdentifier({ value: "1.3.6.1.4.1.311.20.2.3" }), new Constructed({
+				type: 0,
+				value: [new ObjectIdentifier({ value: "1.3.6.1.4.1.311.20.2.3" }), new Constructed({ // universalPrincipalName
 					idBlock: {
 						tagClass: 3, // CONTEXT-SPECIFIC 128
 						tagNumber: 0
